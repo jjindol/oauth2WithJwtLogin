@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    group:
+      "local" : "jwt"
+    active : local
