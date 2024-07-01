@@ -31,9 +31,6 @@ import java.io.IOException;
  * 2. RT(X), AT(X) -> 인증 실패 처리, 403 ERROR
  * 3. RT(O) -> DB의 RT와 비교해 일치하면 AT & RT 재발급(RTR 방식), 인증 성공 처리는 하지 않고 실패 처리
  */
-
-
-
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
@@ -49,7 +46,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            filterChain.doFilter(request, response); // "/login" 요청이 드어오면, 다음 필터 호출
+            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; //return 으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
         }
 
