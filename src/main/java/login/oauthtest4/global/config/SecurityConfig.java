@@ -8,6 +8,9 @@ import login.oauthtest4.global.login.filter.CustomJsonUsernamePasswordAuthentica
 import login.oauthtest4.global.login.handler.LoginFailureHandler;
 import login.oauthtest4.global.login.handler.LoginSuccessHandler;
 import login.oauthtest4.global.login.service.LoginService;
+import login.oauthtest4.global.oauth2.handler.OAuth2LoginFailureHandler;
+import login.oauthtest4.global.oauth2.handler.OAuth2LoginSuccessHandler;
+import login.oauthtest4.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +35,9 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
 
     @Bean
@@ -51,7 +56,15 @@ public class SecurityConfig {
 
                 .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                 .antMatchers("/sign-up").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+
+                //== 소셜 로그인 설정 ==//
+                .oauth2Login()
+                .successHandler(oAuth2LoginSuccessHandler)
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint().userService(customOAuth2UserService);
+
 
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
@@ -59,6 +72,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
 
     @Bean
@@ -69,11 +87,6 @@ public class SecurityConfig {
         return new ProviderManager(provider);
     }
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
