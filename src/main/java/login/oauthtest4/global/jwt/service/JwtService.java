@@ -140,6 +140,7 @@ public class JwtService {
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
                         user -> user.updateRefreshToken(refreshToken),
+
                         () -> new Exception("일치하는 회원이 없습니다.")
                 );
     }
@@ -156,16 +157,3 @@ public class JwtService {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public abstract class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
 
     private static final String NAVER = "naver";
@@ -73,7 +73,11 @@ public abstract class CustomOAuth2UserService implements OAuth2UserService<OAuth
         if (NAVER.equals(registrationId)) {
             return SocialType.NAVER;
         }
-        return SocialType.KAKAO;
+        if (KAKAO.equals(registrationId)) {
+            return SocialType.KAKAO;
+        }
+        throw new IllegalArgumentException(registrationId);
+
     }
 
 
