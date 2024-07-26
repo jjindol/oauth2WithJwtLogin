@@ -12,6 +12,7 @@ import login.oauthtest4.global.oauth2.handler.OAuth2LoginFailureHandler;
 import login.oauthtest4.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import login.oauthtest4.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,16 +29,32 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Autowired
     private final LoginService loginService;
+    @Autowired
     private final JwtService jwtService;
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final ObjectMapper objectMapper;
+    @Autowired
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    @Autowired
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    @Autowired
     private final CustomOAuth2UserService customOAuth2UserService;
+
+    public SecurityConfig(LoginService loginService, JwtService jwtService, UserRepository userRepository, ObjectMapper objectMapper, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, OAuth2LoginFailureHandler oAuth2LoginFailureHandler, CustomOAuth2UserService customOAuth2UserService) {
+        this.loginService = loginService;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
+        this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+        this.oAuth2LoginFailureHandler = oAuth2LoginFailureHandler;
+        this.customOAuth2UserService = customOAuth2UserService;
+    }
 
 
     @Bean
