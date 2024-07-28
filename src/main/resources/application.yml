@@ -1,28 +1,27 @@
+server:
+  port: 8080
+
 spring:
   profiles:
     group:
-      "local" : "local, jwt, oauth"
-    active : local
+      "common": "jwt, oauth"
+    active: common
 
 ---
 spring:
   config:
     activate:
-      on-profile: "local"
-
-  h2:
-    console:
-      enabled: true
+      on-profile: "common"
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/oauthtest4
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/oauthtest4
+    username: root
+    password: 1425
 
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
